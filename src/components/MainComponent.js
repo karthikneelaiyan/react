@@ -11,7 +11,7 @@ import Contact from "./ContactComponent";
 import { COMMENTS } from "../commmon-utils/comments";
 import { PROMOTIONS } from "../commmon-utils/promotions";
 import { LEADERS } from "../commmon-utils/leaders";
-
+import About from './AboutComponent';
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -53,6 +53,7 @@ class Main extends Component {
           />
           <Route path='/menu/:dishId' component={DishWithId} />
           <Route exact path="/contactus" component={Contact} />} />
+          <Route exact path="/aboutus" component={() => <About leaders={this.state.leaders} />}/>
           <Redirect to="/home" />
         </Switch>
         <Footer />
