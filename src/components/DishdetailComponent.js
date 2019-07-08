@@ -21,7 +21,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
-
+import { Loading } from "./LoadingComponent";
 
 class CommentForm extends Component {
   constructor(props) {
@@ -35,7 +35,12 @@ class CommentForm extends Component {
   handleCommentSubmit(values) {
     this.toggleModal();
     console.log("Current State is: " + JSON.stringify(values));
-    this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+    this.props.addComment(
+      this.props.dishId,
+      values.rating,
+      values.author,
+      values.comment
+    );
     //event.preventDefault();
   }
 
@@ -68,7 +73,7 @@ class CommentForm extends Component {
             </ModalHeader>
             <ModalBody>
               <LocalForm onSubmit={values => this.handleCommentSubmit(values)}>
-              <Row className="form-group">
+                <Row className="form-group">
                   <Label htmlFor="rating" md={12}>
                     Rating
                   </Label>
@@ -77,7 +82,8 @@ class CommentForm extends Component {
                       model=".rating"
                       id="rating"
                       name="rating"
-                      className="form-control">
+                      className="form-control"
+                    >
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -117,18 +123,18 @@ class CommentForm extends Component {
                   </Col>
                 </Row>
                 <Row className="form-group">
-                    <Label htmlFor="comment" md={12}>
-                      Comment
-                    </Label>
-                    <Col md={10}>
-                      <Control.textarea
-                        model=".comment"
-                        id="comment"
-                        name="comment"
-                        rows="6"
-                        className="form-control"
-                      />
-                    </Col>
+                  <Label htmlFor="comment" md={12}>
+                    Comment
+                  </Label>
+                  <Col md={10}>
+                    <Control.textarea
+                      model=".comment"
+                      id="comment"
+                      name="comment"
+                      rows="6"
+                      className="form-control"
+                    />
+                  </Col>
                 </Row>
                 <Button type="submit" value="submit" color="primary">
                   Submit
@@ -143,7 +149,8 @@ class CommentForm extends Component {
 }
 
 function RenderDish({ dish }) {
-  if (dish != null) {
+ 
+   if (dish != null) {
     return (
       <Card>
         <CardImg top src={dish.image} alt={dish.name} />
@@ -153,9 +160,11 @@ function RenderDish({ dish }) {
         </CardBody>
       </Card>
     );
-  } else return <div />;
+  } else {
+    return <div />;
+  }
 }
-function FormatDate({date = ""}) {
+function FormatDate({ date = "" }) {
   var monthNames = [
     "January",
     "February",
@@ -183,27 +192,44 @@ function RenderComments({ comments, addComment, dishId }) {
   }
 
   console.log(comments);
-  const commentsItems = comments.map((cmt )=> {
-    console.log(cmt)
-    return(
-    <li key={cmt.id}>
-      <p>{cmt.comment}</p>
+  const commentsItems = comments.map(cmt => {
+    console.log(cmt);
+    return (
+      <li key={cmt.id}>
+        <p>{cmt.comment}</p>
 
-      <p>
-        -- {cmt.author} ,<FormatDate date={cmt.date} />
-      </p>
-    </li>
-  )});
+        <p>
+          -- {cmt.author} ,<FormatDate date={cmt.date} />
+        </p>
+      </li>
+    );
+  });
   return (
     <div>
       <h2>Comment</h2>
       <ul key={comments.id}>{commentsItems}</ul>
-      <CommentForm dishId={dishId} addComment={addComment}/>
+      <CommentForm dishId={dishId} addComment={addComment} />
     </div>
   );
 }
 
 const DishDetail = props => {
+  if (props.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    );
+  } else if (props.errMess) {
+    return (
+      <div className="container">
+        <div className="row">
+          <h4>{props.errMess}</h4>
+        </div>
+      </div>
+    );}
   return (
     <div className="container">
       <div className="row">
@@ -223,10 +249,11 @@ const DishDetail = props => {
           <RenderDish dish={props.dish} />
         </div>
         <div className="col-12 col-md-5 m-1">
-        <RenderComments comments={props.comments}
-        addComment={props.addComment}
-        dishId={props.dish.id}
-      />
+          <RenderComments
+            comments={props.comments}
+            addComment={props.addComment}
+            dishId={props.dish.id}
+          />
         </div>
       </div>
     </div>
