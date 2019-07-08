@@ -31,7 +31,7 @@ class Header extends Component {
             isModalOpen: !this.state.isModalOpen
             });
         }
-    
+        
         render() {
          return(
             <div>
