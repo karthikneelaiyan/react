@@ -22,7 +22,8 @@ import {
 import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
 import { Loading } from "./LoadingComponent";
-
+import { baseUrl } from '../commmon-utils/baseUrl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 class CommentForm extends Component {
   constructor(props) {
     super(props);
@@ -35,12 +36,7 @@ class CommentForm extends Component {
   handleCommentSubmit(values) {
     this.toggleModal();
     console.log("Current State is: " + JSON.stringify(values));
-    this.props.addComment(
-      this.props.dishId,
-      values.rating,
-      values.author,
-      values.comment
-    );
+    this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
     //event.preventDefault();
   }
 
@@ -152,13 +148,19 @@ function RenderDish({ dish }) {
  
    if (dish != null) {
     return (
-      <Card>
-        <CardImg top src={dish.image} alt={dish.name} />
-        <CardBody>
-          <CardTitle>{dish.name}</CardTitle>
-          <CardText>{dish.description}</CardText>
-        </CardBody>
-      </Card>
+      <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+            <Card>
+                <CardImg top src={baseUrl + dish.image} alt={dish.name} />
+                <CardBody>
+                    <CardTitle>{dish.name}</CardTitle>
+                    <CardText>{dish.description}</CardText>
+                </CardBody>
+            </Card>
+            </FadeTransform>
     );
   } else {
     return <div />;
@@ -186,7 +188,7 @@ function FormatDate({ date = "" }) {
 
   return day + " " + monthNames[monthIndex] + "," + year;
 }
-function RenderComments({ comments, addComment, dishId }) {
+function RenderComments({comments, postComment, dishId}) {
   if (null == comments) {
     return <div />;
   }
@@ -195,6 +197,7 @@ function RenderComments({ comments, addComment, dishId }) {
   const commentsItems = comments.map(cmt => {
     console.log(cmt);
     return (
+      <Fade in>
       <li key={cmt.id}>
         <p>{cmt.comment}</p>
 
@@ -202,13 +205,14 @@ function RenderComments({ comments, addComment, dishId }) {
           -- {cmt.author} ,<FormatDate date={cmt.date} />
         </p>
       </li>
+      </Fade>
     );
   });
   return (
     <div>
       <h2>Comment</h2>
       <ul key={comments.id}>{commentsItems}</ul>
-      <CommentForm dishId={dishId} addComment={addComment} />
+      <CommentForm dishId={dishId} postComment={postComment} />
     </div>
   );
 }
@@ -249,11 +253,13 @@ const DishDetail = props => {
           <RenderDish dish={props.dish} />
         </div>
         <div className="col-12 col-md-5 m-1">
+        <Stagger in>
           <RenderComments
             comments={props.comments}
-            addComment={props.addComment}
+            postComment={props.postComment}
             dishId={props.dish.id}
           />
+            </Stagger>
         </div>
       </div>
     </div>

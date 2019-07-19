@@ -9,6 +9,9 @@ import {
   Label
 } from "reactstrap";
 import { Control, Form, Errors, actions } from 'react-redux-form';
+
+
+
 class Contact extends Component {
   constructor(props) {
     super(props);
@@ -17,8 +20,9 @@ class Contact extends Component {
 
   handleSubmit(values) {
     console.log('Current State is: ' + JSON.stringify(values));
-    alert('Current State is: ' + JSON.stringify(values));
+    this.props.postFeedback(values.firstname, values.lastname, values.telnum, values.email, values.message);
     this.props.resetFeedbackForm();
+   alert(JSON.stringify(this.props.feedback[0]))
     // event.preventDefault();
 }
   render() {
