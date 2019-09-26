@@ -8,9 +8,7 @@ import {
   Col,
   Label
 } from "reactstrap";
-import { Control, Form, Errors, actions } from 'react-redux-form';
-
-
+import { Control, Form, Errors, actions } from "react-redux-form";
 
 class Contact extends Component {
   constructor(props) {
@@ -19,12 +17,18 @@ class Contact extends Component {
   }
 
   handleSubmit(values) {
-    console.log('Current State is: ' + JSON.stringify(values));
-    this.props.postFeedback(values.firstname, values.lastname, values.telnum, values.email, values.message);
+    console.log("Current State is: " + JSON.stringify(values));
+    this.props.postFeedback(
+      values.firstname,
+      values.lastname,
+      values.telnum,
+      values.email,
+      values.message
+    );
     this.props.resetFeedbackForm();
-   alert(JSON.stringify(this.props.feedback[0]))
+    alert(JSON.stringify(this.props.feedback[0]));
     // event.preventDefault();
-}
+  }
   render() {
     const required = val => val && val.length;
     const maxLength = len => val => !val || val.length <= len;
@@ -98,7 +102,10 @@ class Contact extends Component {
             <h3>Send us your Feedback</h3>
           </div>
           <div className="col-12 col-md-9">
-          <Form model="feedback" onSubmit={(values) => this.handleSubmit(values)}>
+            <Form
+              model="feedback"
+              onSubmit={values => this.handleSubmit(values)}
+            >
               <Row className="form-group">
                 <Label htmlFor="firstname" md={2}>
                   First Name
